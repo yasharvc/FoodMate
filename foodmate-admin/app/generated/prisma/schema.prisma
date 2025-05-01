@@ -18,3 +18,9 @@ model Users {
   lastName  String
   email     String @unique
 }
+
+model Roles {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+}
