@@ -1,9 +1,14 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { PrismaClient } from "../generated/prisma";
+import { info } from "@/lib/offlineLogger";
+import {
+	createOrUpdateUser,
+	createUser,
+	getAllUsers,
+} from "@/repositories/users/UserRepository";
+import { error } from "console";
 
 export default async function Dashboard() {
-	const db = new PrismaClient();
 	const user = await currentUser();
 
 	if (!user) {
@@ -14,25 +19,27 @@ export default async function Dashboard() {
 		user && Date.now() - new Date(user.createdAt).getTime() < 30_000;
 
 	if (isNewUser) {
-		console.log("New user detected, creating user in database...", user);
-		try {
-			await db.users.create({
-				data: {
-					clerkId: user.id ?? "",
-					email: user.emailAddresses[0].emailAddress ?? "",
-					firstName: user.firstName ?? "",
-					lastName: user.lastName ?? "",
-				},
-			});
-		} catch (error) {
-			console.error("Error creating user in database:", error);
+		info("New user detected, creating user in database...", user);
+		const res = await createOrUpdateUser(
+			user.emailAddresses[0]?.emailAddress || "",
+			{
+				clerkId: user.id,
+				firstName: user.firstName || "",
+				lastName: user.lastName || "",
+				email: user.emailAddresses[0]?.emailAddress || "",
+			}
+		);
+		if (res instanceof Error) {
+			error("Error creating user in database", res);
+			return <div>Error creating user in database</div>;
 		}
+		info("User created in database", user);
 	}
 
 	return (
 		<div>
 			<p>{user.id}</p>
-			<p>{JSON.stringify(await db.users.findMany())}</p>
+			<p>{JSON.stringify(await getAllUsers())}</p>
 		</div>
 	);
 }
