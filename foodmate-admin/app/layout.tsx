@@ -1,14 +1,51 @@
-import { ClerkProvider } from "@clerk/nextjs";
+import { type Metadata } from "next";
+import {
+	ClerkProvider,
+	SignedIn,
+	SignedOut,
+	UserButton,
+} from "@clerk/nextjs";
+import { Nunito, Nunito_Sans } from "next/font/google";
+import "./globals.css";
+
+const nunitoSans = Nunito({
+	variable: "--font-nunito-sans",
+	subsets: ["latin"],
+});
+
+const nunitoMono = Nunito_Sans({
+	variable: "--font-nunito-mono",
+	subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+	title: "Food mate application with Next.js and Clerk",
+	description: "Written by Yashar-Aliabbasi [aliabbasi.yashar@gmail.com]",
+};
 
 export default function RootLayout({
 	children,
-}: {
+}: Readonly<{
 	children: React.ReactNode;
-}) {
+}>) {
 	return (
 		<ClerkProvider>
 			<html lang="en">
-				<body className="bg-gray-50">{children}</body>
+				<body
+					className={`${nunitoSans.variable} ${nunitoMono.variable} antialiased`}
+				>
+					<header className="flex justify-end items-center p-4 gap-4 h-16">
+						<SignedOut>
+							Signed out
+							{/* <SignInButton />
+							<SignUpButton /> */}
+						</SignedOut>
+						<SignedIn>
+							<UserButton />
+						</SignedIn>
+					</header>
+					{children}
+				</body>
 			</html>
 		</ClerkProvider>
 	);
