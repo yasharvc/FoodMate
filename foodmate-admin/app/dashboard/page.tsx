@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { info } from "@/lib/offlineLogger";
 import {
 	createOrUpdateUser,
-	createUser,
 	getAllUsers,
 } from "@/repositories/users/UserRepository";
 import { error } from "console";
