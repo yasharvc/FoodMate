@@ -24,3 +24,11 @@ model Roles {
   name        String @unique
   description String
 }
+
+model UserRoles {
+  id     Int @id @default(autoincrement())
+  userId Int
+  roleId Int
+
+  @@unique([userId, roleId])
+}
