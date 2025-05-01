@@ -1,11 +1,9 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { info } from "@/lib/offlineLogger";
-import {
-	createOrUpdateUser,
-	getAllUsers,
-} from "@/repositories/users/UserRepository";
+import { getAllUsers } from "@/repositories/users/UserRepository";
 import { error } from "console";
+import { addNewUser } from "@/services/AuthService";
 
 export default async function Dashboard() {
 	const user = await currentUser();
@@ -19,18 +17,15 @@ export default async function Dashboard() {
 
 	if (isNewUser) {
 		info("New user detected, creating user in database...", user);
-		const res = await createOrUpdateUser(
-			user.emailAddresses[0]?.emailAddress || "",
-			{
-				clerkId: user.id,
-				firstName: user.firstName || "",
-				lastName: user.lastName || "",
-				email: user.emailAddresses[0]?.emailAddress || "",
-			}
-		);
+		const res = await addNewUser({
+			clerkId: user.id,
+			firstName: user.firstName || "",
+			lastName: user.lastName || "",
+			email: user.emailAddresses[0]?.emailAddress || "",
+		});
 		if (res instanceof Error) {
 			error("Error creating user in database", res);
-			return <div>Error creating user in database</div>;
+			return <div>Error adding new user into application</div>;
 		}
 		info("User created in database", user);
 	}
