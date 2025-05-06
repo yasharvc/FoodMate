@@ -1,12 +1,8 @@
 import { type Metadata } from "next";
-import {
-	ClerkProvider,
-	SignedIn,
-	SignedOut,
-	UserButton,
-} from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Nunito, Nunito_Sans } from "next/font/google";
 import "./globals.css";
+import { checkRoles } from "@/lib/auth";
 
 const nunitoSans = Nunito({
 	variable: "--font-nunito-sans",
@@ -23,7 +19,7 @@ export const metadata: Metadata = {
 	description: "Written by Yashar-Aliabbasi [aliabbasi.yashar@gmail.com]",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
@@ -37,10 +33,28 @@ export default function RootLayout({
 					<header className="flex justify-end items-center p-4 gap-4 h-16">
 						<SignedOut>
 							Signed out
+							{(await checkRoles(["UsER", "Admin"])) ? (
+								<div className="text-green-500">
+									User or admin
+								</div>
+							) : (
+								<div className="text-red-500">
+									Not user or admin
+								</div>
+							)}
 							{/* <SignInButton />
 							<SignUpButton /> */}
 						</SignedOut>
 						<SignedIn>
+							{(await checkRoles(["UsER", "Admin"])) ? (
+								<div className="text-green-500">
+									User or admin
+								</div>
+							) : (
+								<div className="text-red-500">
+									Not user or admin
+								</div>
+							)}
 							<UserButton />
 						</SignedIn>
 					</header>

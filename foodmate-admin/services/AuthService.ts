@@ -1,6 +1,7 @@
 import { USER_ROLE_NAME } from "@/constants/roles";
 import { assignRoleToUser, getRoleByName } from "@/repositories/roles/RoleRepository";
 import { createOrUpdateUser } from "@/repositories/users/UserRepository";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export async function addNewUser (user: { clerkId: string; email: string; firstName: string; lastName: string }) {
 	// Validation
@@ -27,5 +28,25 @@ export async function addNewUser (user: { clerkId: string; email: string; firstN
 	} else {
 		throw new Error("Error assigning role to user");
 	}
+
+	await addRoleIntoUserMetadata(user.clerkId, userRole.name);
+
 	return userInDb;
+}
+
+async function addRoleIntoUserMetadata (clerkId: string, role: string) {
+	const user = await (await clerkClient()).users.getUser(clerkId);
+	if (!user) {
+		throw new Error("User not found in Clerk");
+	}
+	if ((user.publicMetadata.roles as string[] ?? []).includes(role)) {
+		return;
+	}
+	(await clerkClient()).users.updateUserMetadata(clerkId, {
+		publicMetadata: {
+			roles: [
+				...(user.publicMetadata.roles as string[] ?? []),
+				role],
+		},
+	});
 }

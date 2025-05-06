@@ -5,18 +5,20 @@ Welcome to my portfolio application built with **Next.js**, **React**, **TypeScr
 ## Table of Contents
 
 - [Food Mate Application](#food-mate-application)
-	- [Table of Contents](#table-of-contents)
-	- [Features](#features)
-	- [Technologies Used](#technologies-used)
-	- [Getting Started](#getting-started)
-		- [Prerequisites](#prerequisites)
-		- [Installation](#installation)
+ 	- [Table of Contents](#table-of-contents)
+ 	- [Features](#features)
+ 	- [Technologies Used](#technologies-used)
+ 	- [Getting Started](#getting-started)
+  		- [Prerequisites](#prerequisites)
+  		- [Installation](#installation)
 
 ## Features
 
 - User authentication using **Clerk**
 - Connecting **Clerk** user with internal user
 - Role-based access control for different user types (admin, user)
+- Using jwt token
+- Http only cookies for saving jwt
 - CRUD operations for user management
 - Seed Data
   - Basic roles like administrator and simple user
