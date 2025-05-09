@@ -1,7 +1,4 @@
-import { signJwt } from "@/lib/jwt";
-import { cookies } from "next/headers";
-import { currentUser } from "@clerk/nextjs/server";
-import { serialize } from "cookie";
+import HomeLayout from "./home-layout";
 
 export default async function Home() {
 	// const cookieStore = await cookies();
@@ -47,5 +44,5 @@ export default async function Home() {
 	// 			"Content-Type": "application/json",
 	// 		},
 	// 	});
-	return <div>asdas</div>;
+	return <HomeLayout>Body</HomeLayout>;
 }

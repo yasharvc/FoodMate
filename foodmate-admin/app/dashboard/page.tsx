@@ -32,7 +32,6 @@ export default async function Dashboard() {
 
 	return (
 		<div>
-			
 			<p>{user.id}</p>
 			<p>{JSON.stringify(await getAllUsers())}</p>
 		</div>

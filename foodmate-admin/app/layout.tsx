@@ -1,10 +1,9 @@
 import { type Metadata } from "next";
-import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Nunito, Nunito_Sans } from "next/font/google";
 import "./globals.css";
-import { checkRoles } from "@/lib/auth";
 import { ThemeProvider } from "@/components/Theme/theme-provider";
-import { ThemeModeToggle } from "@/components/UI/theme-mode-toggle";
+import { cookies } from "next/headers";
 
 const nunitoSans = Nunito({
 	variable: "--font-nunito-sans",
@@ -26,11 +25,13 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const theme = (await cookies()).get("theme")?.value || "light";
 	return (
 		<ClerkProvider>
-			<html lang="en" suppressHydrationWarning>
+			<html suppressHydrationWarning>
 				<body
 					className={`${nunitoSans.variable} ${nunitoMono.variable} antialiased`}
+					data-theme={theme}
 				>
 					<ThemeProvider
 						attribute="class"
@@ -38,35 +39,6 @@ export default async function RootLayout({
 						enableSystem
 						disableTransitionOnChange
 					>
-						<header className="flex justify-end items-center p-4 gap-4 h-16">
-							<SignedOut>
-								Signed out
-								{(await checkRoles(["UsER", "Admin"])) ? (
-									<div className="text-green-500">
-										User or admin
-									</div>
-								) : (
-									<div className="text-red-500">
-										Not user or admin
-									</div>
-								)}
-								{/* <SignInButton />
-							<SignUpButton /> */}
-							</SignedOut>
-							<SignedIn>
-								{(await checkRoles(["UsER", "Admin"])) ? (
-									<div className="text-green-500">
-										User or admin
-									</div>
-								) : (
-									<div className="text-red-500">
-										Not user or admin
-									</div>
-								)}
-								<UserButton />
-								<ThemeModeToggle />
-							</SignedIn>
-						</header>
 						{children}
 					</ThemeProvider>
 				</body>
